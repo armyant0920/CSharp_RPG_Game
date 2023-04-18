@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using RPG_TEST.RPG.Action;
+using RPG_TEST.RPG.Event;
 
 namespace RPG_TEST.RPG
 {
@@ -10,11 +12,15 @@ namespace RPG_TEST.RPG
     {
         public string NAME;
         public int HP;//{get;set;}
-
+        public int MAX_HP;
+        //public int SP;
+        //public int MAX_SP;
         public int STR;// { get; set; }
         public int DEF;//{get;set;}
-        public int SPD;
+        public int SPEED;
+        
         public STATE _STATE;
+        
         public void Set_State(STATE state){
             this._STATE=state;
         }
@@ -33,22 +39,37 @@ namespace RPG_TEST.RPG
         public Role(string name, int hp, int str, int def,int spd)
         {
             this.NAME = name;
+            this.MAX_HP = hp;
             this.HP = hp;
+            
             this.STR = str;
             this.DEF = def;
-            this.SPD = spd;
+            this.SPEED = spd;
+            
             this._STATE = STATE.NORMAL;//
         }
+
+        public void Cast(Role target) {
+            //if (skill is SingleTarget) { 
+            
+                
+            //}
+            
+        }
+
+
+        
 
         public void Attack(Role target) { 
             //觸發attack事件
             AttackEvent.Invoke(this, new AttackEventArgs(target));
             int attackDamage = STR;
             int actualDamage = target.Attacked(this, attackDamage);
-            
- 
-
         }
+
+        
+
+
         public int Attacked(Role attacker,int damage) {
             int actualDamage = Math.Max(damage - DEF, 1);
             HP -= actualDamage;
@@ -65,6 +86,7 @@ namespace RPG_TEST.RPG
         }
         public event EventHandler<AttackEventArgs> AttackEvent;
         public event EventHandler<DamageEventArgs> DamageEvent;
+        public event EventHandler<CastEventArgs> CastEvent;
         public event EventHandler<DieEventArgs> DieEvent;
 
         public override string ToString()

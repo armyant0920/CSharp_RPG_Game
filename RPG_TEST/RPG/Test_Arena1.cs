@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using RPG_TEST.RPG.Action;
 
 namespace RPG_TEST.RPG
 {
@@ -17,8 +18,22 @@ namespace RPG_TEST.RPG
 
 
 
+            
+            
+
+
+
             Console.WriteLine("create role");
             Init();
+            Role GM = new Role("GM");
+            GM.STR = 100;
+            Role wounded = roles[0];
+            wounded.HP = 1;
+            HolyLight holy = new HolyLight(GM,wounded);
+            holy.Cast();
+
+            Console.ReadKey();
+
             //Role role1 = new 
 
             int pick = rnd.Next((roles.Count-1));
@@ -58,7 +73,7 @@ namespace RPG_TEST.RPG
             }
 
             //依照速度排序
-            players.Sort((x,y)=>y.SPD.CompareTo(x.SPD));
+            players.Sort((x,y)=>y.SPEED.CompareTo(x.SPEED));
 
             
 
@@ -131,9 +146,10 @@ namespace RPG_TEST.RPG
                 int def = 5 + rnd.Next(5);
                 int speed = 10 + rnd.Next(10);
                 role.HP = hp;
+                role.MAX_HP = hp;
                 role.STR = str;
                 role.DEF = def;
-                role.SPD = speed;
+                role.SPEED = speed;
             }
         }
 
