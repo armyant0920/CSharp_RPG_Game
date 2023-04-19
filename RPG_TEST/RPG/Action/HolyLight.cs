@@ -5,21 +5,25 @@ using System.Text;
 
 namespace RPG_TEST.RPG.Action
 {
-    class HolyLight:SingleTarget
+    class HolyLight:Skill,Target.SingleTarget
     {
         string Skill_name = "Holy Light";
 
- 
+        Role target;
 
-        public HolyLight(Role caster,Role target) {
+
+
+        public HolyLight(Role caster, Role target)
+        {
             this.caster = caster;
             this.target = target;
         }
 
-        public override void Assign(Role target)
+        public  Role AssignTarget(List<Role> roles)
         {
-            base.Assign(target);
+            Role target = null;
             //加入檢查邏輯
+            return target;
 
         }
 

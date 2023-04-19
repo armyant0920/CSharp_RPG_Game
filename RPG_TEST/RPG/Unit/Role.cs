@@ -10,6 +10,7 @@ namespace RPG_TEST.RPG
 {
     class Role
     {
+        public int level = 1;//default level
         public string NAME;
         public int HP;//{get;set;}
         public int MAX_HP;
@@ -18,6 +19,8 @@ namespace RPG_TEST.RPG
         public int STR;// { get; set; }
         public int DEF;//{get;set;}
         public int SPEED;
+
+        public List<Skill> skills;//provide 
         
         public STATE _STATE;
         
@@ -58,6 +61,28 @@ namespace RPG_TEST.RPG
         }
 
 
+        public void Cast(Skill skill) { 
+        
+            //if is a single_target_skill
+            //do..
+            if (skill is SingleTarget) {
+                SingleTarget_Action(skill);
+            }
+
+            
+
+
+            //
+
+
+        }
+
+        public void SingleTarget_Action(Skill skill){
+            SingleTarget spell = (SingleTarget)skill;
+            //Role target = spell.Assign();
+        }
+
+
         
 
         public void Attack(Role target) { 
@@ -80,6 +105,7 @@ namespace RPG_TEST.RPG
                 this.HP = 0;
                 this._STATE = STATE.DEAD;
                 DieEvent.Invoke(this, new DieEventArgs());
+
             }
 
             return actualDamage;

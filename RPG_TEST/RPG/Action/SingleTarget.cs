@@ -8,6 +8,11 @@ namespace RPG_TEST.RPG.Action
     class SingleTarget:Skill,AssignTarget//Single target parent skill 
 
     {
+        enum AVAILABLE{
+            ALLY,
+            ENEMY                
+        }
+
        protected Role target;
 
 
@@ -42,9 +47,19 @@ namespace RPG_TEST.RPG.Action
        }
 
 
-       public virtual void Assign(Role target)
+       public virtual Role Assign(List<Role> roles)
        {
-           this.target = target;
+           //this.target = target;
+           Console.WriteLine("請選擇目標");
+
+           Role target = null;
+
+           foreach (Role role in roles) { 
+            
+           }
+
+
+           return target;
        }
 
 

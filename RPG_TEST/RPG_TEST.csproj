@@ -46,12 +46,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Battle.cs" />
+    <Compile Include="Place.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RandomFight.cs" />
     <Compile Include="RPG\Action\AssignTarget.cs" />
     <Compile Include="RPG\Action\HolyLight.cs" />
     <Compile Include="RPG\Action\SingleTarget.cs" />
     <Compile Include="RPG\Action\Skill.cs" />
+    <Compile Include="RPG\Action\Target\SingleTarget.cs" />
     <Compile Include="RPG\Event\AttackEventArgs.cs" />
     <Compile Include="RPG\Buff\Buff.cs" />
     <Compile Include="RPG\Event\CastEventArgs.cs" />
@@ -59,12 +63,14 @@
     <Compile Include="RPG\Event\DieEventArgs.cs" />
     <Compile Include="RPG\Envirnoment.cs" />
     <Compile Include="RPG\Equip\Equip.cs" />
+    <Compile Include="RPG\Item\Item.cs" />
+    <Compile Include="RPG\Player\Player.cs" />
     <Compile Include="RPG\Unit\Role.cs" />
     <Compile Include="RPG\Test_Arena1.cs" />
+    <Compile Include="RPG\WorldMap.cs" />
+    <Compile Include="Selection.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="RPG\Item\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
