@@ -17,12 +17,6 @@ namespace RPG_TEST.RPG
         static void Main(string[] args) {
 
 
-
-            
-            
-
-
-
             Console.WriteLine("create role");
             Init();
             Role GM = new Role("GM");

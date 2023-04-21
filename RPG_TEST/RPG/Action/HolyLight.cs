@@ -8,14 +8,14 @@ namespace RPG_TEST.RPG.Action
     class HolyLight:Skill,Target.SingleTarget
     {
         string Skill_name = "Holy Light";
-
+        string Skill_Desc = "This skill heal single ally target base on caster's STR";
         Role target;
 
 
 
         public HolyLight(Role caster, Role target)
         {
-            this.caster = caster;
+            this.Skill_Caster = caster;
             this.target = target;
         }
 
@@ -33,7 +33,7 @@ namespace RPG_TEST.RPG.Action
             
             try {
 
-                int healing = Math.Min(this.caster.STR,target.MAX_HP-target.HP);//取得caster屬性
+                int healing = Math.Min(this.Skill_Caster.STR,target.MAX_HP-target.HP);//取得caster屬性
 
                 Console.WriteLine("Holy...heal this!");
                 Console.WriteLine("healing hp:{0} ",healing);

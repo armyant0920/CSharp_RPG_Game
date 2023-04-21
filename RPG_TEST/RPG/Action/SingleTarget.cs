@@ -28,7 +28,7 @@ namespace RPG_TEST.RPG.Action
            if (target != null)
            {
                try{
-                Console.WriteLine("{0} cast {1} to {2}",this.caster.NAME,this.Skill_Name,target);
+                Console.WriteLine("{0} cast {1} to {2}",this.Skill_Caster.NAME,this.Skill_Name,target);
                 
                }catch(Exception ex){
 

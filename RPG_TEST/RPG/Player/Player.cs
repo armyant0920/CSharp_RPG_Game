@@ -9,7 +9,7 @@ namespace RPG_TEST.RPG.Player
     {
          const int MAX_GROUP=3;//max member count
          const int MAX_Package = 30;//max item can be hold
-        public string Team_Name;
+        public string Player_Name;
         public int Money { get; private set; }
 
         List<Item.Item> Bag;
@@ -17,7 +17,7 @@ namespace RPG_TEST.RPG.Player
         public List<Role> group=new List<Role>();
 
         public Player(string name){
-            this.Team_Name = name;
+            this.Player_Name = name;
             Bag = new List<Item.Item>();
         
         }

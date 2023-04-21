@@ -19,7 +19,7 @@ namespace RPG_TEST.RPG
         public int STR;// { get; set; }
         public int DEF;//{get;set;}
         public int SPEED;
-
+        public Player.Player Owner;
         public List<Skill> skills;//provide 
         
         public STATE _STATE;
@@ -28,7 +28,7 @@ namespace RPG_TEST.RPG
             this._STATE=state;
         }
         public enum STATE { 
-            NORMAL,
+            NONE,
             DEAD,
             SLEEP,
             POISION,
@@ -43,19 +43,15 @@ namespace RPG_TEST.RPG
         {
             this.NAME = name;
             this.MAX_HP = hp;
-            this.HP = hp;
-            
+            this.HP = hp;            
             this.STR = str;
             this.DEF = def;
-            this.SPEED = spd;
-            
-            this._STATE = STATE.NORMAL;//
+            this.SPEED = spd;            
+            this._STATE = STATE.NONE;//
         }
 
         public void Cast(Role target) {
-            //if (skill is SingleTarget) { 
-            
-                
+            //if (skill is SingleTarget) {                        
             //}
             
         }
@@ -69,11 +65,6 @@ namespace RPG_TEST.RPG
                 SingleTarget_Action(skill);
             }
 
-            
-
-
-            //
-
 
         }
 
@@ -82,20 +73,18 @@ namespace RPG_TEST.RPG
             //Role target = spell.Assign();
         }
 
-
         
+
 
         public void Attack(Role target) { 
             //觸發attack事件
             AttackEvent.Invoke(this, new AttackEventArgs(target));
             int attackDamage = STR;
-            int actualDamage = target.Attacked(this, attackDamage);
+            int actualDamage = target.Damaged(this, attackDamage);
         }
 
-        
 
-
-        public int Attacked(Role attacker,int damage) {
+        public int Damaged(Role attacker,int damage) {
             int actualDamage = Math.Max(damage - DEF, 1);
             HP -= actualDamage;
           
@@ -114,6 +103,56 @@ namespace RPG_TEST.RPG
         public event EventHandler<DamageEventArgs> DamageEvent;
         public event EventHandler<CastEventArgs> CastEvent;
         public event EventHandler<DieEventArgs> DieEvent;
+
+        /// <summary>
+        /// 負責印出List內的資訊並回傳List
+        /// </summary>
+        /// <returns></returns>
+        public List<Skill> ShowSkills() {
+
+            
+            List<Skill> temp;
+            if (skills.Count < 1)
+            {
+                //if role not learn any skill yet,return basic order
+                temp = new List<Skill>();
+                string[] param = new string[] { "" };
+
+
+                Skill attack = new Skill("Attack", "A basic action only occur if role has no skill", new Skill.USEAGE[] { Skill.USEAGE.ENEMY });
+                temp.Add(attack);
+
+            }
+            else {
+                temp = skills;
+            }
+
+            //if skills is not null
+            
+          
+            for (int i = 0; i < temp.Count; i++)
+            {
+                Console.WriteLine(temp[i]);
+                Console.WriteLine("key:{0}", i);
+            }
+            
+
+            return temp;
+        }
+
+        public Player.Player GetOwner() {
+
+            return this.Owner;
+        }
+ 
+
+        public Skill SelectSkill() {
+            Skill skill = null;
+       
+
+
+            return skill;
+        }
 
         public override string ToString()
         {
