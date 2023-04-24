@@ -58,6 +58,7 @@
     <Compile Include="RPG\Action\Skill.cs" />
     <Compile Include="RPG\Action\Target\SingleTarget.cs" />
     <Compile Include="RPG\Arena_2.cs" />
+    <Compile Include="RPG\CustomException\ActionException.cs" />
     <Compile Include="RPG\Event\AttackEventArgs.cs" />
     <Compile Include="RPG\Buff\Buff.cs" />
     <Compile Include="RPG\Event\CastEventArgs.cs" />

@@ -22,22 +22,29 @@ namespace RPG_TEST.RPG.Action
             GROUP                
         }
 
-        public string Skill_Name;
+        public virtual string Skill_Name{get;private set;}
         public int Skill_CD;
         public Role Skill_Caster;
         public USEAGE[] Skill_Useage;
-        public string Skill_Desc;
+        public string Skill_Desc{get;private set;}
         public Role Skill_Target;
         public int priority;
 
 
         public Skill() { }
+
+        [Obsolete("This method is deprecated,All Action should Extend its property and method.")]
         public Skill(string name,string desc,USEAGE[] useage) { }
+        /// <summary>
+        /// set skill caster
+        /// </summary>
+        /// <param name="role"></param>
+        public Skill(Role role) { this.Skill_Caster = role; }
+
 
         //設定優先度
         public virtual void SetPriority() { }
-
-
+        
         public virtual void Cast() { }
 
         public virtual void DoAction(){
@@ -45,19 +52,66 @@ namespace RPG_TEST.RPG.Action
         }
         //public abstract void Cast(Role Target);
         //public abstract void Cast(List<Role> Group);
+        public virtual string HintText() {
+            return this.Skill_Name;
+        }
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(string.Format("{0}\n{1}",Skill_Name,Skill_Desc));
-
-            return sb.ToString();
+            return HintText();
         }
 
-        public bool CheckAvailable() {
+        //public virtual void SetCaster(Role role) {
+        //    this.Skill_Caster = role;
+        //}
+        public virtual void SetTarget(Role role){
+            this.Skill_Target = role;
+
+        }
+        /// <summary>
+        /// basic AutoTarget
+        /// </summary>
+        /// <param name="enemy_player"></param>
+        /// <returns></returns>
+        public virtual Role AutoTarget(Player.Player enemy_player) { 
+            
+            //
+            Role target=null;
+            Random rnd = new Random();
+            //ALLY
+            if (Skill_Useage.Contains(USEAGE.ALLY)) {
+                List<Role> targets = Skill_Caster.Owner.group.Where(x => x._STATE != Role.STATE.DEAD).ToList();
+                target = targets.ElementAt(rnd.Next(targets.Count));
+                    
+            }
+            //ENEMY
+            if (Skill_Useage.Contains(USEAGE.ENEMY))
+            {
+                List<Role> targets = enemy_player.group.Where(x => x._STATE != Role.STATE.DEAD).ToList();
+                target = targets.ElementAt(rnd.Next(targets.Count));
+
+            }
+
+            return target;
+
+
+
+        }
+
+        public virtual bool CheckAvailable() {
             bool available = false;
 
+            switch (Skill_Caster._STATE) { 
             
+                case Role.STATE.DEAD:
+                    throw new CustomException.ActionException("Caster is dead");
+                    
+
+                case Role.STATE.SLEEP:
+                    throw new CustomException.ActionException("Caster fall asleep");                    
+            }
+
+
             //no target check
             if(!Skill_Useage.Contains(USEAGE.NONE) && this.Skill_Target==null){
                 return false;
@@ -74,6 +128,8 @@ namespace RPG_TEST.RPG.Action
 
             return available;
         }
+
+         
 
     }
 }

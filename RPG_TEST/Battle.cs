@@ -57,15 +57,60 @@ namespace RPG_TEST
 
         
         }
+        /// <summary>
+        /// auto decide unit's action in input player team
+        /// </summary>
+        /// <param name="player"></param>
+        public static void AutoChoose(Player myteam,Player enemyteam) {
+
+            List<Skill> Picked_Actions = new List<Skill>();
+            Random rnd = new Random();
+            foreach (Role role in myteam.group) {
+                
+                int selected = rnd.Next(role.skills.Count);
+                Skill action = role.skills[selected];
+                
+                //check availiable,maybe only availiable skills should be inclide?
+
+                // check pick action available first,
+                //I think it could check by action itself
+                //but if all action not availble?
+                //single target:if enemy,if no enemy target,means over,in select section it shouldn't happen
+                //single target:if ally,if no ally,try
+
+                if (action.Skill_Useage.Contains(Skill.USEAGE.ENEMY)) {
+                    //pick only alive enemy
+
+                    List<Role> targets = enemyteam.group.Where(x => x._STATE != Role.STATE.DEAD).ToList();
+                    //selected =rnd.Next(targets.Count);        
+                    action.SetTarget(targets.ElementAt(rnd.Next(targets.Count)));                    
+                }
+
+                if (action.Skill_Useage.Contains(Skill.USEAGE.ALLY)) {
+                    
+                    List<Role> targets = myteam.group.Where(x => x._STATE != Role.STATE.DEAD).ToList();
+                    action.SetTarget(targets.ElementAt(rnd.Next(targets.Count)));
+                }
+
+                //override by invidual action
+                action.SetPriority();
 
 
-        public Skill PickAction(Role role) {
+                Picked_Actions.Add(action);
+                
+            }
+            
+        }
+
+
+        public static Skill PickAction(Role role) {
             //show skill list first
             Console.WriteLine("choose action from blow list");
             List<Skill>skills= role.ShowSkills();
 
             ConsoleKeyInfo input = Console.ReadKey();
 
+            Console.WriteLine("user press key:{0}",input.KeyChar.ToString());
             if (input.Equals (ConsoleKey.Escape)) {
                 Console.WriteLine("press ESC,cancel move");
                 throw new ArgumentException("press Cancel");

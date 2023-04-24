@@ -7,8 +7,8 @@ namespace RPG_TEST.RPG.Action
 {
     class HolyLight:Skill,Target.SingleTarget
     {
-        string Skill_name = "Holy Light";
-        string Skill_Desc = "This skill heal single ally target base on caster's STR";
+        new string Skill_Name = "Holy Light";
+        new string Skill_Desc = "This skill heal single ally target base on caster's STR";
         Role target;
 
 

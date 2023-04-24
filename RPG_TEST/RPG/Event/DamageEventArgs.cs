@@ -7,9 +7,12 @@ namespace RPG_TEST.RPG
 {
     class DamageEventArgs : EventArgs
     {
-        public Role Attacker { get; private set; }
-        public Role Attacked { get; private set; }
+
+        public Role Attacked { get; private set; }//可能可以移除,invoke時的sender就是
+        public Role Attacker { get; private set; }        
         public int damage { get; private set; }
+
+        
         public DamageEventArgs(Role attacker,Role attacked, int damage) {
 
             this.Attacker = attacker;

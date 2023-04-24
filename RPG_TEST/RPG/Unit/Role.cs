@@ -36,8 +36,8 @@ namespace RPG_TEST.RPG
         }
 
 
-        public Role() { }
-        public Role(string name){this.NAME=name;}
+        public Role() { SetSubscription(); }
+        public Role(string name) { this.NAME = name; SetSubscription(); }
 
         public Role(string name, int hp, int str, int def,int spd)
         {
@@ -48,6 +48,38 @@ namespace RPG_TEST.RPG
             this.DEF = def;
             this.SPEED = spd;            
             this._STATE = STATE.NONE;//
+            SetSubscription();
+        }
+
+        private void SetSubscription() {
+            skills = new List<Skill>();
+            AttackEvent += new EventHandler<AttackEventArgs>(Role_AttackEvent);
+            DieEvent += new EventHandler<DieEventArgs>(Role_DieEvent);
+            DamageEvent += new EventHandler<DamageEventArgs>(Role_DamageEvent);
+        
+        }
+
+        void Role_DamageEvent(object sender, DamageEventArgs e)
+        {
+
+            Console.WriteLine("{0} take {1} damage from {2}",this.NAME,e.damage,e.Attacker.NAME);//
+            //if this damage>current HP,trigger DieEvent
+            this.HP = Math.Max(this.HP - e.damage, 0);
+            if (HP <= 0)
+            {
+                this.HP = 0;
+                this._STATE = STATE.DEAD;
+
+                DieEvent.Invoke(this, new DieEventArgs());
+
+            }
+                //throw new NotImplementedException();
+        }
+
+        void Role_AttackEvent(object sender, AttackEventArgs e)
+        {
+            Console.WriteLine("{0} attack {1}",((Role)sender).NAME,e.target.NAME);
+            //throw new NotImplementedException();
         }
 
         public void Cast(Role target) {
@@ -84,20 +116,32 @@ namespace RPG_TEST.RPG
         }
 
 
-        public int Damaged(Role attacker,int damage) {
-            int actualDamage = Math.Max(damage - DEF, 1);
-            HP -= actualDamage;
-          
-            DamageEvent.Invoke(this, new DamageEventArgs(attacker,this,actualDamage));
-            if (HP <= 0)
-            {
-                this.HP = 0;
-                this._STATE = STATE.DEAD;
-                DieEvent.Invoke(this, new DieEventArgs());
+        public int Damaged(Role damage_source,int damage) {
 
-            }
+
+            //check this unit's abaility to determine actual damage
+            int actualDamage = Math.Max(damage - DEF, 1);
+
+
+            //HP -= actualDamage;
+          
+            DamageEvent.Invoke(this, new DamageEventArgs(damage_source,this,actualDamage));
+            //if (HP <= 0)
+            //{
+            //    this.HP = 0;
+            //    this._STATE = STATE.DEAD;
+             
+            //    DieEvent.Invoke(this, new DieEventArgs());
+
+            //}
 
             return actualDamage;
+        }
+
+        void Role_DieEvent(object sender, DieEventArgs e)
+        {
+            Console.WriteLine("{0} fallen",((Role)sender).NAME);
+            //throw new NotImplementedException();
         }
         public event EventHandler<AttackEventArgs> AttackEvent;
         public event EventHandler<DamageEventArgs> DamageEvent;
@@ -138,6 +182,19 @@ namespace RPG_TEST.RPG
             
 
             return temp;
+        }
+
+        public void LearnSkill(Skill skill) {
+            //if unit already learn this skill,do not add to skill_list
+            if (this.skills.Exists(x => x.Skill_Name == skill.Skill_Name)) {
+                Console.WriteLine("{0} already has skill: {1}", this.NAME, skill.Skill_Name);
+                return;
+            }
+
+            skills.Add(skill);
+            Console.WriteLine("{0} learned {1}",this.NAME,skill.Skill_Name);
+            
+        
         }
 
         public Player.Player GetOwner() {
