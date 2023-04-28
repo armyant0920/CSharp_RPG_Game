@@ -56,11 +56,14 @@
     <Compile Include="RPG\Action\HolyLight.cs" />
     <Compile Include="RPG\Action\SingleTarget.cs" />
     <Compile Include="RPG\Action\Skill.cs" />
+    <Compile Include="RPG\Action\Target\Defense.cs" />
     <Compile Include="RPG\Action\Target\SingleTarget.cs" />
     <Compile Include="RPG\Arena_2.cs" />
+    <Compile Include="RPG\Buff\Buff_Defense.cs" />
+    <Compile Include="RPG\Buff\Buff_Rage.cs" />
     <Compile Include="RPG\CustomException\ActionException.cs" />
     <Compile Include="RPG\Event\AttackEventArgs.cs" />
-    <Compile Include="RPG\Buff\Buff.cs" />
+    <Compile Include="RPG\Buff\Buff_Base.cs" />
     <Compile Include="RPG\Event\CastEventArgs.cs" />
     <Compile Include="RPG\Event\DamageEventArgs.cs" />
     <Compile Include="RPG\Event\DieEventArgs.cs" />
@@ -68,6 +71,7 @@
     <Compile Include="RPG\Equip\Equip.cs" />
     <Compile Include="RPG\Item\Item.cs" />
     <Compile Include="RPG\Player\Player.cs" />
+    <Compile Include="RPG\Unit\Attribute.cs" />
     <Compile Include="RPG\Unit\Role.cs" />
     <Compile Include="RPG\Test_Arena1.cs" />
     <Compile Include="RPG\WorldMap.cs" />

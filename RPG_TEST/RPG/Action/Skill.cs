@@ -42,19 +42,54 @@ namespace RPG_TEST.RPG.Action
         public Skill(Role role) { this.Skill_Caster = role; }
 
 
-        //設定優先度
-        public virtual void SetPriority() { }
+        //set Action attribute
+        public virtual void SetAttribute() {
+
+
+            //set priority attr
+            this.priority = Skill_Caster.SPEED;
+
+            
+            //
+            if (this.Skill_Caster._STATE == Role.STATE.FREEZE) {
+                priority /= 2;
+            }
+            //if user has other state,set as blow...
+            
+        
+        }
         
         public virtual void Cast() { }
 
-        public virtual void DoAction(){
-            Console.Write("{0}",Skill_Caster.NAME);
+        public virtual bool DoAction(){
+
+            if (!CheckAvailable()) {
+                Console.WriteLine("can't do");
+                return false;
+            }
+
+            //if (Skill_Caster._STATE == Role.STATE.DEAD) {
+            //    Console.WriteLine();
+            //}
+
+            Console.Write("{0}", Skill_Caster.NAME);
+            return true;
         }
         //public abstract void Cast(Role Target);
         //public abstract void Cast(List<Role> Group);
         public virtual string HintText() {
             return this.Skill_Name;
+            //StringBuilder sb = new StringBuilder();
+            //sb.Append(string.Format(" NAME:{0}\n DESC:{1}\n USEAGE:{2}\n CD:{3}", Skill_Name, Skill_Desc, string.Join(",", Skill_Useage.Select(s => Enum.GetName(typeof(USEAGE), s))), Skill_CD));
+
+            //return sb.ToString();
         }
+
+        public virtual USEAGE[] Get_USEAGE()
+        {
+            return Skill_Useage;
+        }
+
 
         public override string ToString()
         {
@@ -123,8 +158,6 @@ namespace RPG_TEST.RPG.Action
                     throw new ArgumentException("target is not ally");
                 }    
             }
-
-
 
             return available;
         }

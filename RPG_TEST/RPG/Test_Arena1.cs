@@ -75,21 +75,21 @@ namespace RPG_TEST.RPG
 
             //當沒有dead時
             
-            while (players.Count(p => p._STATE == Role.STATE.DEAD) <= 0) {
-                Console.ReadKey();
-                //一個回合
-                if (First)
-                {
-                    Console.WriteLine("===========Round{0} begin===========", ++round);
-                    players[0].Attack(players[1]);
-                }
-                else {
-                    players[1].Attack(players[0]);
-                    Console.WriteLine("===========Round{0} end=============", round);
+            //while (players.Count(p => p._STATE == Role.STATE.DEAD) <= 0) {
+            //    Console.ReadKey();
+            //    //一個回合
+            //    if (First)
+            //    {
+            //        Console.WriteLine("===========Round{0} begin===========", ++round);
+            //        players[0].Attack(players[1]);
+            //    }
+            //    else {
+            //        players[1].Attack(players[0]);
+            //        Console.WriteLine("===========Round{0} end=============", round);
 
-                }
-                First = !First;
-            }
+            //    }
+            //    First = !First;
+            //}
 
             foreach (Role role in players.Where(p => p._STATE != Role.STATE.DEAD).ToArray()) {
                 Console.WriteLine("{0} is alive", role.NAME);

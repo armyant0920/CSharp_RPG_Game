@@ -19,9 +19,126 @@ namespace RPG_TEST.RPG
         public int STR;// { get; set; }
         public int DEF;//{get;set;}
         public int SPEED;
-        public Player.Player Owner;
-        public List<Skill> skills;//provide 
+
+        public int Buff_STR;
+        public int Buff_DEF;
+        public int Buff_SPEED;
+        //try to include all attribute concept,role itself,buff effect,equip....etc count
+
+        public Unit.Attribute ATTR;
+
         
+        public List<Unit.Attribute> attrs;
+
+        /// <summary>
+        /// by attr_name sum all of same fieldname attr,for extend attribute easiler
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public int Get_AttrByType(string name) {
+
+            int result = 0;
+
+            foreach (Unit.Attribute attr in attrs) {
+
+                foreach (FieldInfo field in attr.GetType().GetFields())
+                {
+                    if (field.Name.Equals(name))
+                    {
+                        result += (int)field.GetValue(attr);
+
+                    }
+                }
+                
+            }
+            return result;
+        }
+
+        public void AddBuff(Buff_Base buff) {
+            this.buffs.Add(buff);
+        
+        }
+
+        public int Get_STR_All() {
+            int STR = 0;
+           //add buff attr first
+            if (buffs.Count > 0) { 
+                foreach(Buff_Base buff in buffs){
+                    if (!attrs.Contains(buff.attr))
+                        attrs.Add(buff.attr);
+                }
+            }
+
+
+            foreach (Unit.Attribute attr in attrs)
+            {
+                STR += attr.STR;
+            }
+
+            return STR;
+        }
+
+     
+
+        public int Get_BuffDEF()
+        {
+            int buff_def = 0;
+            foreach (Buff_Base buff in buffs)
+            {
+
+                foreach (FieldInfo field in buff.GetType().GetFields())
+                {
+                    if (field.Name == "DEF")
+                    {
+                        buff_def += (int)field.GetValue(buff);
+
+                    }
+                }
+            }
+            return buff_def;
+        }
+
+        public int Get_BuffSTR() {
+
+            int buff_str = 0;
+            foreach (Buff_Base buff in buffs)
+            {
+
+                foreach (FieldInfo field in buff.GetType().GetFields())
+                {
+                    if (field.Name == "STR")
+                    {
+                        buff_str += (int)field.GetValue(buff);
+
+                    }
+                }
+            }
+            return buff_str;
+        
+            
+        }
+
+        public int Get_DEF_All()
+        {
+            return DEF + Buff_DEF;
+        }
+
+        public int Get_SPEED_All()
+        {
+            return SPEED + Buff_SPEED;
+        }
+
+        public Player.Player Owner;
+        public Player.Player GetOwner()
+        {
+
+            return this.Owner;
+        }
+
+        public List<Skill> skills;//provide 
+        public List<Buff_Base> buffs;
+
+
         public STATE _STATE;
         
         public void Set_State(STATE state){
@@ -30,9 +147,10 @@ namespace RPG_TEST.RPG
         public enum STATE { 
             NONE,
             DEAD,
-            SLEEP,
-            POISION,
-            FREEZE        
+            SLEEP,//can't move
+            POISION,//every turn end take damage
+            PARALYSIS,//STR/2
+            FREEZE//SPD/2        
         }
 
 
@@ -41,12 +159,27 @@ namespace RPG_TEST.RPG
 
         public Role(string name, int hp, int str, int def,int spd)
         {
-            this.NAME = name;
-            this.MAX_HP = hp;
-            this.HP = hp;            
+            //set attr
+            this.attrs = new List<Unit.Attribute>();
+            this.ATTR = new Unit.Attribute();
+            attrs.Add(ATTR);
+            ATTR.STR = str;
+            ATTR.DEF = def;
+            ATTR.SPEED = spd;
+            this.buffs = new List<Buff_Base>();
+
+
+
             this.STR = str;
             this.DEF = def;
             this.SPEED = spd;            
+
+            //*************
+
+            this.NAME = name;
+            this.MAX_HP = hp;
+            this.HP = hp;            
+            
             this._STATE = STATE.NONE;//
             SetSubscription();
         }
@@ -63,6 +196,7 @@ namespace RPG_TEST.RPG
         {
 
             Console.WriteLine("{0} take {1} damage from {2}",this.NAME,e.damage,e.Attacker.NAME);//
+            
             //if this damage>current HP,trigger DieEvent
             this.HP = Math.Max(this.HP - e.damage, 0);
             if (HP <= 0)
@@ -72,6 +206,11 @@ namespace RPG_TEST.RPG
 
                 DieEvent.Invoke(this, new DieEventArgs());
 
+            }
+            else {
+
+            Console.WriteLine("{0} remainHP: {1}", this.NAME,this.HP);//
+            
             }
                 //throw new NotImplementedException();
         }
@@ -88,7 +227,6 @@ namespace RPG_TEST.RPG
             
         }
 
-
         public void Cast(Skill skill) { 
         
             //if is a single_target_skill
@@ -96,8 +234,6 @@ namespace RPG_TEST.RPG
             if (skill is SingleTarget) {
                 SingleTarget_Action(skill);
             }
-
-
         }
 
         public void SingleTarget_Action(Skill skill){
@@ -105,35 +241,29 @@ namespace RPG_TEST.RPG
             //Role target = spell.Assign();
         }
 
+        /// <summary>
+        /// Round End, buuf、effect、State handle
+        /// </summary>
+        public void RoundEndEvent() { 
+            //
+            if (_STATE == STATE.POISION) { 
+                //take poision damage
+            }
         
-
-
-        public void Attack(Role target) { 
-            //觸發attack事件
-            AttackEvent.Invoke(this, new AttackEventArgs(target));
-            int attackDamage = STR;
-            int actualDamage = target.Damaged(this, attackDamage);
         }
+       
 
 
         public int Damaged(Role damage_source,int damage) {
 
+            int actualDamage = 0;
 
+            actualDamage = damage;
             //check this unit's abaility to determine actual damage
-            int actualDamage = Math.Max(damage - DEF, 1);
-
-
-            //HP -= actualDamage;
+            actualDamage = Math.Max(damage - DEF, 1);
           
             DamageEvent.Invoke(this, new DamageEventArgs(damage_source,this,actualDamage));
-            //if (HP <= 0)
-            //{
-            //    this.HP = 0;
-            //    this._STATE = STATE.DEAD;
-             
-            //    DieEvent.Invoke(this, new DieEventArgs());
 
-            //}
 
             return actualDamage;
         }
@@ -197,10 +327,7 @@ namespace RPG_TEST.RPG
         
         }
 
-        public Player.Player GetOwner() {
-
-            return this.Owner;
-        }
+        
  
 
         public Skill SelectSkill() {
@@ -209,6 +336,35 @@ namespace RPG_TEST.RPG
 
 
             return skill;
+        }
+
+        public void Recovery() {
+            HP = MAX_HP;
+            _STATE = STATE.NONE;
+            Console.WriteLine("recovery this unit");
+
+        }
+
+        public bool CheckMoveAble() {
+            bool result = false;
+
+            switch (this._STATE) { 
+            
+                case Role.STATE.DEAD:
+                    return false;
+                
+                case Role.STATE.SLEEP:
+                    return false;
+                
+                default:
+                    Console.WriteLine("undefined");
+                    break;
+            
+            }
+
+
+            return result;
+
         }
 
         public override string ToString()
@@ -224,8 +380,11 @@ namespace RPG_TEST.RPG
 
             //}
 
+
+
             foreach (FieldInfo field in this.GetType().GetFields())
             {
+                if (field.Name != "skills" )
                 sb.Append(string.Format("{0}:{1}\t", field.Name, field.GetValue(this)));
             }
             

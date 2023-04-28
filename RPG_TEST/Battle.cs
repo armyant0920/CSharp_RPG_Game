@@ -93,7 +93,7 @@ namespace RPG_TEST
                 }
 
                 //override by invidual action
-                action.SetPriority();
+                action.SetAttribute();
 
 
                 Picked_Actions.Add(action);
@@ -102,6 +102,57 @@ namespace RPG_TEST
             
         }
 
+        //for easy way,just give current pick role and all role,
+        //then all owner<>role's owner =enemy,vise versa
+        
+        //or even input param = all battle ground,
+        //since battle ground should include all element..
+
+        public static void ShowMember(List<Role> all) {//Role role,
+            
+            
+
+            Console.WriteLine("plz choose target");
+
+            //if show enemys
+            //List<Role> targets = all.Where(r => r.Owner != role.Owner && r._STATE != Role.STATE.DEAD).ToList();
+
+            for (int i = 0; i < all.Count; i++) {
+                Console.WriteLine(all[i]);
+                Console.WriteLine("key:{0}", i);
+            
+            }
+            
+
+        
+        }
+
+        public static int Pick() {
+
+
+            Console.WriteLine("press key");
+
+            int pick=-1;
+            ConsoleKeyInfo keyinfo = Console.ReadKey();
+            if (int.TryParse(keyinfo.KeyChar.ToString(), out pick))
+            {
+                return pick;
+            }
+            else if (keyinfo.Key != ConsoleKey.Escape)
+            {
+                Console.WriteLine("illegal input index,choose again");
+                return Pick();
+                //throw new KeyNotFoundException("illegal input key");
+                
+            }
+            else {
+                return -1;
+                // throw new KeyNotFoundException("illegal input key");
+            }
+            
+        }
+
+        
 
         public static Skill PickAction(Role role) {
             //show skill list first
@@ -129,6 +180,25 @@ namespace RPG_TEST
             }
             return null;
 
+        }
+
+
+
+        public static List<Skill> PlayerRound(Player player) {
+            //choose interface for each player
+            List<Skill> list = new List<Skill>();
+            foreach (Role role in player.group) {
+                //pick action
+                Skill skill = PickAction(role);
+                //pick target
+                
+                //
+                
+            }
+
+
+            return list;
+        
         }
         
 

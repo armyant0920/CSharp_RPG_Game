@@ -40,9 +40,8 @@ namespace RPG_TEST.RPG
                 Console.WriteLine("your input key is invalid");
                 
             }
-            
-            
 
+           
 
             role2.LearnSkill(new Action.Attack());
             List<Skill> role2_actliist = role2.ShowSkills();
@@ -58,16 +57,64 @@ namespace RPG_TEST.RPG
 
 
             RPG_TEST.RPG.Action.Skill act = new Attack(role1,role2);
-            Console.ReadKey();
+      
             act.DoAction();
             act = new Attack(role2,role1);
-            Console.ReadKey();
+     
             act.DoAction();
 
             Console.WriteLine(role1);
             Console.WriteLine(role2);
-            Console.ReadKey();
+            
+
+            Console.WriteLine("test for pick & do");
+            Role role3 = new Role("Role3", 100, 0, 0, 10);
+            player2.group.Add(role3);
+
+            role1.Recovery();
+            role1.AddBuff(new Buff.Buff_Rage());
+            int times=5;
+            while (times > 0) {
+                times--;
+
+                //pick Skill  
+                List<Skill> skills=role1.ShowSkills();
+                List<Role> targets = player2.group;
+                Skill skill = null;
+                try {
+                    skill = skills[Battle.Pick()];
+
+                    //pick target
+
+                    if (skill.Get_USEAGE().Contains(Skill.USEAGE.ENEMY))
+                    {
+                        Battle.ShowMember(player2.group);
+                        skill.SetTarget(targets[Battle.Pick()]);
+                        
+                    }
+
+                    skill.Skill_Caster = role1;
+
+                    //TakeAction
+                    skill.DoAction();
+
+                    Console.ReadKey();
+                }
+                catch (Exception ex) {
+
+                    Console.WriteLine("pick occur exception:{0}",ex.Message);
+                }
+                
+                
+
+
+               
+            }
+            
+            
         }
+
+        
 
 
 
